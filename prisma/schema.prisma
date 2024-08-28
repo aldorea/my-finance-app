@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TransactionType {
+  INCOME
+  EXPENSE
+  SAVINGS
+}
+
 model User {
   id         Int      @id @default(autoincrement())
   email      String   @unique
@@ -23,7 +29,6 @@ model User {
 
   transactions Transaction[]
   budgets      Budget[]
-  categories   Category[]
 }
 
 model Transaction {
@@ -33,7 +38,7 @@ model Transaction {
   date        DateTime @default(now())
   userId      Int
   categoryId  Int
-  type   String // 'income', 'expense', 'savings'
+  type   TransactionType
 
   user     User     @relation(fields: [userId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
@@ -45,14 +50,9 @@ model Transaction {
 model Category {
   id     Int    @id @default(autoincrement())
   name   String
-  // type   String // 'income', 'expense', 'savings'
-  userId Int
 
-  user         User          @relation(fields: [userId], references: [id])
   transactions Transaction[]
   Budget       Budget[]
-
-  @@index([userId])
 }
 
 model Budget {
